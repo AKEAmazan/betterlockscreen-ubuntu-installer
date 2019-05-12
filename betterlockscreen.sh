@@ -11,15 +11,8 @@ printf -- "---------------------------------------------------------------------
 printf "\n Installing dependencies. May take a few minutes.\n";
 printf -- "----------------------------------------------------------------------------------------------------\n";
 
-## Check for and install absent auxiliary packages
-AUX_PACK="build-essential checkinstall curl git";
-ABSENT_PACKAGES="";
-for package in $AUX_PACK; do
-	packageExists="";
-	[[ $(echo `dpkg-query -W $package 2>&1` | grep -o "no packages found") = "" ]] && packageExists="exists";
-	[[ ! $packageExists ]] && ABSENT_PACKAGES+="$package ";
-done
-[[ $ABSENT_PACKAGES ]] && sudo apt install $AUX_PACK;
+## Install absent auxiliary packages
+sudo apt install build-essential checkinstall curl git;
 printf "\n";
 
 # Fetch version of script
@@ -53,9 +46,6 @@ rm script;
 printf -- "\n----------------------------------------------------------------------------------------------------";
 printf "\n Script installed! Removing unused packages.\n";
 printf -- "----------------------------------------------------------------------------------------------------\n";
-
-## Remove non-pre-existing auxiliary packages
-[[ $ABSENT_PACKAGES ]] && sudo apt remove $ABSENT_PACKAGES;
 
 # Add logs for the installation candidate
 echo "$install_candidate - $vendor; $version; $(date); $(date +%s)" | sudo tee --append /etc/installer-scripts.log > /dev/null;
